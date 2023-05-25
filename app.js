@@ -1,8 +1,11 @@
+require('dotenv').config()
+
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
-const hostname = '192.168.1.252'
-const port = 3000
+const hostname = process.env.HOST
+const port = process.env.PORT
+const environment = process.env.NODE_ENV
 const jsonParser = bodyParser.json()
 const urlencodedParser = bodyParser.urlencoded({ extended: false })
 
@@ -22,5 +25,5 @@ app.post('/humidity', jsonParser, (req, res) => {
 })
 
 app.listen(port, hostname, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`${environment} app listening on ${hostname}:${port}`)
 })
