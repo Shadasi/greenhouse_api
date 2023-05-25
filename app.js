@@ -16,12 +16,12 @@ app.get('/', (req, res) => {
 
 app.post('/temp', jsonParser, (req, res) => {
   console.log(req.body)
-  res.send().status(200)
+  res.send(req.body).status(200)
 })
 
 app.post('/humidity', jsonParser, (req, res) => {
   console.log(req.body)  
-  res.send().status(200)
+  res.send(req.body).status(200)
 })
 
 app.listen(port, hostname, () => {
