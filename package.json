@@ -1,0 +1,14 @@
+{
+  "name": "greenhouse_api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Shadasi/greenhouse_api",
+  "author": "Stephen Albrecht <Shadasi@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
