@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 app.post('/temp', jsonParser, (req, res) => {
   console.log(req.body)
   try {
-    insertTemperature(req.body.sensorName, req.body.temperature, req.body.timestamp)
+    insertTemperature(req.body.sensorName, req.body.temp, req.body.timestamp)
   } catch(e) {
     res.send(req.body).status(500)
   }
@@ -27,7 +27,7 @@ app.post('/temp', jsonParser, (req, res) => {
 })
 
 app.post('/humidity', jsonParser, (req, res) => {
-  console.log(req.body)  
+  // console.log(req.body)  
   try {
     insertHumidity(req.body.sensorName, req.body.humidity, req.body.timestamp)
   } catch(e) {
@@ -60,7 +60,7 @@ const dbTest = async() => {
           throw err;
         }
 
-        console.log(row)
+        // console.log(row)
       }
     )
 
@@ -78,18 +78,19 @@ const insertHumidity = async(sensorName, humidity, timestamp) => {
     if (err) {
       throw err;
     }
-    console.log('Connected to the greenhouse database.');
+    // console.log('Connected to the greenhouse database.');
   });
 
   try {
     const result = await db.run(
       'INSERT INTO humidity(sensor_name, humidity, timestamp) VALUES (:sensorName, :humidity, :timestamp)', {
         ':sensorName':sensorName,
-        ':humidity': humidity,
+        ':humidity': Number.parseFloat(humidity).toFixed(1),
         ':timestamp': timestamp
       })
 
-      console.log(result)
+      // console.log(result)
+      console.log("Humidity Insert:", formatTimestamp())
   } catch(e) {
     console.log(e)
   }
@@ -103,21 +104,47 @@ const insertTemperature = async(sensorName, temperature, timestamp) => {
     if (err) {
       throw err;
     }
-    console.log('Connected to the greenhouse database.');
+    // console.log('Connected to the greenhouse database.');
   });
 
   try {
     const result = await db.run(
       'INSERT INTO temperature(sensor_name, temperature, timestamp) VALUES (:sensorName, :temperature, :timestamp)', {
         ':sensorName':sensorName,
-        ':temperature': temperature,
+        ':temperature': Number.parseFloat(temperature).toFixed(1),
         ':timestamp': timestamp
       })
 
-      console.log(result)
+      console.log("Temperature Insert:", formatTimestamp())
   } catch(e) {
     console.log(e)
   }
 
   db.close()
+}
+
+const formatTimestamp = () => {
+  let date_ob = new Date();
+
+  // current date
+  // adjust 0 before single digit date
+  let date = ("0" + date_ob.getDate()).slice(-2);
+
+  // current month
+  let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+  // current year
+  let year = date_ob.getFullYear();
+
+  // current hours
+  let hours = date_ob.getHours();
+
+  // current minutes
+  let minutes = date_ob.getMinutes();
+
+  // current seconds
+  let seconds = date_ob.getSeconds();
+
+  // prints date & time in YYYY-MM-DD HH:MM:SS format
+  return year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
 }
