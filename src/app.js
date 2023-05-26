@@ -3,13 +3,15 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
+const jsonParser = bodyParser.json()
+const sqlite3 = require('sqlite3').verbose();
+const databasehandler = require('./databasehandler')
+
+
 const hostname = process.env.HOST
 const port = process.env.PORT
 const environment = process.env.NODE_ENV
 const database = process.env.DATABASE
-const jsonParser = bodyParser.json()
-const sqlite3 = require('sqlite3').verbose();
-
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -36,6 +38,16 @@ app.post('/humidity', jsonParser, (req, res) => {
   res.send(req.body).status(200)
 })
 
+app.get('/humidity', jsonParser, async(req, res) => {
+  console.log('hit get /humidity');
+  databasehandler.selectHumidity(req, res)
+})
+
+app.get('/temp', jsonParser, async(req, res) => {
+  console.log('hit get /temp');
+  databasehandler.selectTemperature(req, res)
+})
+
 app.listen(port, hostname, () => {
   console.log(`${environment} app listening on ${hostname}:${port}`)
   console.log(`Using database: ${database}`)
@@ -43,31 +55,12 @@ app.listen(port, hostname, () => {
 })
 
 const dbTest = async() => {  
-  let languages = ['C++', 'Python', 'Java', 'C#', 'Go']
-
   let db = new sqlite3.Database(database, (err) => {
     if (err) {
       throw err;
     }
     console.log('Connected to the greenhouse database.');
   });
-
-  try {
-    const rowsCount = await db.each(
-      'select * from humidity limit 1',
-      (err, row) => {
-        if(err){
-          throw err;
-        }
-
-        // console.log(row)
-      }
-    )
-
-  } catch (e) {
-    console.error(e.message);
-    throw e
-  }
 
   db.close()
 }
