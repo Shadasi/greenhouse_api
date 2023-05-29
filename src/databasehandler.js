@@ -11,7 +11,7 @@ exports.selectHumidity = (req, res) => {
         var list = [];
         var db = new sqlite3.Database(database);      
         var params = [req.query.start, req.query.end]
-        db.all(`SELECT humidity, timestamp, sensor_name FROM humidity where timestamp BETWEEN ? AND ?`, 
+        db.all(`SELECT humidity, timestamp, sensor_name FROM humidity where timestamp BETWEEN ? AND ? order by sensor_name desc`, 
                 params,
                 (err,rows) => {
              if(err) return callback(err);
@@ -39,7 +39,7 @@ exports.selectTemperature = (req, res) => {
         var list = [];
         var db = new sqlite3.Database(database);      
         var params = [req.query.start, req.query.end]
-        db.all(`SELECT temperature, timestamp, sensor_name FROM temperature where timestamp BETWEEN ? AND ?`, 
+        db.all(`SELECT temperature, timestamp, sensor_name FROM temperature where timestamp BETWEEN ? AND ? order by sensor_name desc`, 
                 params,
                 (err,rows) => {
              if(err) return callback(err);
