@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 })
 
 app.post('/temp', jsonParser, (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
   try {
     insertTemperature(req.body.sensorName, req.body.temp, req.body.timestamp)
   } catch(e) {
